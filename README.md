@@ -3,9 +3,62 @@
 
 青龙面板自动化任务脚本合集
 
-## 📑 脚本列表
+## 📁 项目结构
 
-### 1. 晓晓优选能量任务 (xxyx.js)
+```
+ql-scripts/
+├── jlc.py                  # 嘉立创自动签到脚本
+├── xxyx.js                 # 晓晓优选能量任务脚本
+├── xiaomi_motion.js        # 小米运动刷步数脚本
+├── sendNotify.js           # 青龙通知模块
+├── userscripts/            # 油猴脚本目录
+│   └── jlc_token.js        # 嘉立创Token抓取助手
+└── README.md
+```
+
+##  脚本列表
+
+### 1. 嘉立创自动签到 (jlc.py)
+
+自动完成嘉立创平台的每日签到任务，支持多账号和连签奖励领取。
+
+> 📌 本脚本基于 [Foticing/LC-AutoSign](https://github.com/Foticing/LC-AutoSign) 修改而来
+
+#### 功能特性
+
+- ✅ 自动每日签到
+- ✅ 自动领取连签奖励（第7天）
+- ✅ 支持多账号执行
+- ✅ 账号脱敏显示
+- ✅ 青龙面板通知推送
+
+#### 环境变量配置
+
+| 变量名 | 说明 | 必填 | 示例 |
+|--------|------|------|------|
+| `jlcToken` | 嘉立创Token，多个账号用`&`或换行符分隔 | 是 | `token1&token2` |
+
+#### Token 获取方式
+
+使用 [`userscripts/jlc_token.js`](userscripts/jlc_token.js) 油猴脚本在移动端抓取：
+
+1. 安装油猴脚本（Tampermonkey）
+2. 添加 `jlc_token.js` 脚本
+3. 访问 https://m.jlc.com 并登录
+4. 点击页面右侧的"抓取Token"悬浮球
+5. Token 将自动复制到剪贴板
+
+#### 定时任务
+
+```
+cron: 0 8 * * *
+```
+
+每天早上8点执行
+
+---
+
+### 2. 晓晓优选能量任务 (xxyx.js)
 
 自动完成晓晓优选平台的能量任务，包括每日签到和完成各种任务以获取能量。
 
@@ -189,7 +242,45 @@ npm install axios crypto uuid
    - 网络连接问题
 3. **缓存问题**: 删除 `cache` 目录下的缓存文件重试
 
+## 🔌 油猴脚本
+
+本项目包含一些辅助用的油猴脚本，存放在 `userscripts/` 目录下。
+
+### JLC/开源平台 Token 抓取助手 (jlc_token.js)
+
+专为移动端设计的Token抓取脚本，支持嘉立创和开源硬件平台。
+
+> 📌 本脚本基于 [zhangMonday/PCBfactory-auto-check-in](https://github.com/zhangMonday/PCBfactory-auto-check-in) 修改而来
+
+#### 功能特性
+
+- ✅ 一键提取嘉立创 Token
+- ✅ 一键提取开源硬件平台 Cookie
+- ✅ 自动复制到剪贴板
+- ✅ 移动端友好的悬浮球设计
+
+#### 支持平台
+
+| 平台 | 域名 | 提取内容 |
+|------|------|----------|
+| 嘉立创 | m.jlc.com | Token |
+| 开源硬件平台 | oshwhub.com | Cookie |
+
+#### 安装方法
+
+1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展
+2. 点击 Tampermonkey 图标 -> 添加新脚本
+3. 复制 [`userscripts/jlc_token.js`](userscripts/jlc_token.js) 的内容并保存
+4. 访问对应网站即可使用
+
+---
+
 ## 📜 更新日志
+
+### 2025-12-23
+- ✅ 添加嘉立创自动签到脚本
+- ✅ 添加油猴脚本目录和Token抓取助手
+- ✅ 完善项目结构说明
 
 ### 2025-01-04
 - ✅ 添加晓晓优选能量任务脚本
