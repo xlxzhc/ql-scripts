@@ -1,5 +1,5 @@
-const querystring = require('node:querystring');
-const { request: undiciRequest, ProxyAgent, FormData } = require('undici');
+import querystring from 'node:querystring';
+import { request as undiciRequest, ProxyAgent, FormData } from 'undici';
 const timeout = 15000;
 
 async function request(url, options = {}) {
@@ -530,9 +530,9 @@ function ddBotNotify(text, desp) {
       timeout,
     };
     if (DD_BOT_TOKEN && DD_BOT_SECRET) {
-      const crypto = require('crypto');
+      const crypto = await import('crypto');
       const dateNow = Date.now();
-      const hmac = crypto.createHmac('sha256', DD_BOT_SECRET);
+      const hmac = crypto.default.createHmac('sha256', DD_BOT_SECRET);
       hmac.update(`${dateNow}\n${DD_BOT_SECRET}`);
       const result = encodeURIComponent(hmac.digest('base64'));
       options.url = `${options.url}&timestamp=${dateNow}&sign=${result}`;
@@ -1030,8 +1030,8 @@ async function smtpNotify(text, desp) {
   }
 
   try {
-    const nodemailer = require('nodemailer');
-    const transporter = nodemailer.createTransport({
+    const nodemailer = await import('nodemailer');
+    const transporter = nodemailer.default.createTransport({
       service: SMTP_SERVICE,
       auth: {
         user: SMTP_EMAIL,
@@ -1509,6 +1509,4 @@ async function sendNotify(text, desp, params = {}) {
   ]);
 }
 
-module.exports = {
-  sendNotify,
-};
+export { sendNotify };

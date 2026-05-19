@@ -19,16 +19,21 @@ XIAOMI_STEPS: 步数范围，多个用#分隔（可选，默认随机8000-25000�
 cron: 0 9,15 * * *
 */
 
-const axios = require('axios');
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
+import axios from 'axios';
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
 
-const uuid = require('uuid');
+// ESM 中 __dirname 的替代方案
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // 导入青龙通知模块
 let sendNotify;
 try {
-    sendNotify = require('./sendNotify');
+    sendNotify = await import('./sendNotify.js');
 } catch (e) {
     console.log('❌ 未找到sendNotify模块，将跳过通知功能');
 }
@@ -152,7 +157,7 @@ class MiMotionRunner {
         this.logStr = '';
         this.invalid = false;
         this.cacheFile = path.join(cacheDir, getSafeFilename(user) + '.json');
-        this.device_id = `hm-node-${uuid.v4()}`;
+        this.device_id = `hm-node-${uuidv4()}`;
 
         if (!user || !password) {
             this.invalid = true;
@@ -423,7 +428,7 @@ class MiMotionRunner {
         }
 
         try {
-            const url = `https://api-mifit-cn.huami.com/v1/data/band_data.json?&t=${Date.now()}&r=${uuid.v4()}`;
+            const url = `https://api-mifit-cn.huami.com/v1/data/band_data.json?&t=${Date.now()}&r=${uuidv4()}`;
 
             // 构建步数数据JSON
             const currentDate = new Date().toISOString().split('T')[0];
@@ -680,9 +685,7 @@ function Env(name) {
     };
 }
 
-// 执行主函数
-if (require.main === module) {
-    main().catch(console.error);
-}
+// 执行主函数（ESM 方式）
+main().catch(console.error);
 
-module.exports = { MiMotionRunner, main };
+export { MiMotionRunner, main };
