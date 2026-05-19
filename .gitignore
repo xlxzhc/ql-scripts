@@ -1,4 +1,1 @@
-package-lock.json
-package.json
-node_modules/
-xxyx_energy.js
+Nothing should be ignored based on the provided file changes, as they only include JavaScript source files (.js) which are legitimate code files to track in version control.
