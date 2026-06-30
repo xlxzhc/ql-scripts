@@ -19,23 +19,26 @@ XIAOMI_STEPS: 步数范围，多个用#分隔（可选，默认随机8000-25000�
 cron: 0 9,15 * * *
 */
 
-import axios from 'axios';
-import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { v4 as uuidv4 } from 'uuid';
+const axios = require('axios');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 
-// ESM 中 __dirname 的替代方案
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// 使用 Node.js 内置 crypto.randomUUID()，无需 uuid 依赖
+const uuidv4 = () => crypto.randomUUID();
 
-// 导入青龙通知模块
+// CommonJS 环境下 __dirname 和 __filename 已内置，无需额外处理
+
+// 导入青龙通知模块（青龙的sendNotify通常在上级scripts目录）
 let sendNotify;
 try {
-    sendNotify = await import('./sendNotify.js');
-} catch (e) {
-    console.log('❌ 未找到sendNotify模块，将跳过通知功能');
+    sendNotify = require('./sendNotify.js');
+} catch (e1) {
+    try {
+        sendNotify = require('../sendNotify.js');
+    } catch (e2) {
+        console.log('❌ 未找到sendNotify模块，将跳过通知功能');
+    }
 }
 
 // 全局配置
@@ -685,7 +688,5 @@ function Env(name) {
     };
 }
 
-// 执行主函数（ESM 方式）
+// 执行主函数
 main().catch(console.error);
-
-export { MiMotionRunner, main };
