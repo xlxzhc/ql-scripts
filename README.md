@@ -8,6 +8,7 @@
 ```
 ql-scripts/
 ├── jlc.py                  # 嘉立创签到脚本
+├── fenxsh.js               # 粉象生活任务脚本
 ├── xxyx.js                 # 晓晓优选能量任务脚本
 ├── xinxi.js                # 辛喜日常任务脚本
 ├── xiaomi_motion.js        # 小米运动/Zepp Life 刷步脚本
@@ -102,7 +103,31 @@ XinXi="token1\ntoken2\n12345#token3"
 
 ---
 
-### 4. 小米运动刷步数 (xiaomi_motion.js)
+### 4. 粉象生活任务脚本 (fenxsh.js)
+
+自动完成粉象生活 App 的签到与日常任务，支持多账号执行。
+
+- ✅ 获取用户信息并检查账号状态
+- ✅ 自动签到与完成特殊任务
+- ✅ 获取待完成任务并逐项执行
+- ✅ 支持多账号
+- ✅ 执行结束后通过 `sendNotify.js` 推送运行日志
+
+环境变量：
+
+- `fenxiang`：账号参数，单个账号格式为 `did#finger#token#oaid`，多个账号用 `&` 或换行分隔
+
+示例：
+
+```bash
+fenxiang="did1#finger1#token1#oaid1&did2#finger2#token2#oaid2"
+```
+
+也可以在脚本顶部的 `localCookie` 中填写账号参数；有效值会优先于环境变量。需要通知推送时，请按通知模块的说明配置推送环境变量。
+
+---
+
+### 5. 小米运动刷步数 (xiaomi_motion.js)
 
 自动修改小米运动 / Zepp Life 的步数数据，支持多账号与随机步数范围控制。
 
@@ -145,7 +170,7 @@ cron: 0 9,15 * * *
 
 ---
 
-### 5. 通知模块 (sendNotify.js)
+### 6. 通知模块 (sendNotify.js)
 
 青龙面板通用通知模块，供脚本在执行结束后推送通知消息。
 
@@ -155,7 +180,7 @@ cron: 0 9,15 * * *
 
 ---
 
-### 6. 油猴脚本 (userscripts/jlc_token.js)
+### 7. 油猴脚本 (userscripts/jlc_token.js)
 
 用于移动端抓取嘉立创 Token 或开源硬件平台 Cookie，并自动复制到剪贴板。
 
@@ -174,14 +199,17 @@ cron: 0 9,15 * * *
 在青龙环境中，通常需要安装以下依赖：
 
 ```bash
-npm install axios crypto uuid
+npm install axios tough-cookie undici crypto-js
 ```
 
 如果青龙依赖管理中没有自动安装，可手动添加：
 
 - `axios`
+- `tough-cookie`
+- `undici`（通知模块使用）
+- `crypto-js`
 - `crypto`（Node.js 内置，通常无需额外安装）
-- `uuid`（实际代码中可使用内置 `crypto.randomUUID()`，也可按需安装）
+- 小米运动脚本使用 Node.js 内置 `crypto.randomUUID()`，无需安装 `uuid`
 
 ## 📝 使用方法
 
@@ -228,12 +256,22 @@ npm install axios crypto uuid
 - 修改步数失败：通常为 Token 失效或网络异常。
 - 缓存问题：删除 `cache/` 下对应缓存文件后重试。
 
+### 粉象生活脚本
+
+- 未找到账号：确认 `fenxiang` 格式为 `did#finger#token#oaid`，多账号使用 `&` 或换行分隔。
+- 通知未收到：确认 `sendNotify.js` 可用，并已配置至少一种推送渠道。
+
 ### 辛喜脚本
 
 - 无法读取账号：确认环境变量 `XinXi` 格式无误。
 - 任务异常：检查 token 是否有效，以及接口返回状态。
 
 ## 📜 更新日志
+
+### 2026-09-29
+
+- ✅ 补充粉象生活脚本说明、账号配置示例及通知说明
+- ✅ 更新依赖安装说明
 
 ### 2026-09-28
 
